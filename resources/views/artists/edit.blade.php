@@ -4,7 +4,7 @@
      
     @section('content')
     <form action="update-artist" method="post" class="formulario">
-        @csrf
+        @csrfgit 
     <label>Artista</label>
       <select name="artists" id="lang">
       @foreach($artists as $artist) 
