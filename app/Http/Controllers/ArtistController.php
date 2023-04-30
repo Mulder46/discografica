@@ -22,7 +22,7 @@ class ArtistController extends Controller
      */
     public function create()
     {
-        //
+        return view('artists.create');
     }
 
     /**
@@ -30,7 +30,8 @@ class ArtistController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $artist = Artist::create(['name'=>$request->name,'artistName'=>$request->artistName]);
+        return view('artists.created',compact('request'));
     }
 
     /**
@@ -39,11 +40,12 @@ class ArtistController extends Controller
     public function select() //vamos a elegir los datos de que artista quiere ver
     {
         $artists=Artist::all();
-        return view('artists.select',compact(['artists']));
+        return view('artists.select',compact('artists'));
     }
-    public function show(string $id)
+    public function show(Request $request)
     {
-        //
+        $artist = Artist::find($request->id);
+        return view('artists.show',compact('artist'));
     }
 
     /**
@@ -61,18 +63,35 @@ class ArtistController extends Controller
      */
     public function update(Request $request)
     {
-        $artist=Artist::findOrFail($request->id); //busco el id del artísta para editarlo
-        $artist->name = $request->name;
-        $artist->artistName = $request->artistName;
-        $artist->save();
+        
+         $artist=Artist::findOrFail($request->id); //busco el id del artísta para editarlo
+         $artist->name = $request->name;
+         $artist->artistName = $request->artistName;
+         $artist->save();
         return view('artists.show',compact('artist'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        if($request->boton=="confirmar"){
+            Artist::findOrFail($request->id)->delete();
+
+        }
+        $artists=Artist::all();
+        return view('artists.index',compact('artists'));
+    }
+    public function editDelete(Request $request){
+     
+     $artist=Artist::findOrFail($request->id);
+      
+         if($request->action=="edit"){
+            return view('artists.edit',compact('artist'));
+         }else if($request->action=="delete"){ 
+            return view('artists.delete',compact('artist'));
+      }else//beta version
+      return redirect()->route('show-artist',compact('request'));
     }
 }

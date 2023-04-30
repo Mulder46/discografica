@@ -3,22 +3,21 @@
     @extends('layouts.plantilla')
      
     @section('content')
-    <form action="update-artist" method="post" class="formulario">
-        @csrfgit 
-    <label>Artista</label>
-      <select name="artists" id="lang">
-      @foreach($artists as $artist) 
-        <option value={{$artist->id}}>{{$artist->artistName}}</option>
-        @endforeach
-      </select>
-      <div class="cajas">
-            Nombre real:<input type="text" name="name">
-      </div>
-      <div class="cajas">
-            Nombre artístico:<input type="text" name="artistName">
-      </div>
-      <div class="envio">
-            <input type="submit" value="Enviar" />
-      </div>
-    </form>
+    <h1>Editar Artista</h1>
+    <div class="tablas">
+      <form action="{{route('updateArtist')}}" method="post" class="formulario">
+            @csrf
+      <label>Artista</label>     
+            <div class="cajas">
+                  <input type="hidden" name="id" value={{$artist->id}}>
+                  Nombre real:<input type="text" name="name" value="{{$artist->artistName}}" >
+            </div>
+            <div class="cajas">
+                  Nombre artístico:<input type="text" name="artistName"  value="{{$artist->name}}">
+            </div>
+            <div class="envio">
+                  <input type="submit" value="Enviar" />
+            </div>
+      </form>
+    </div>
     @endsection
