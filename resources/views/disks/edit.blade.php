@@ -3,21 +3,32 @@
     @extends('layouts.plantilla')
      
     @section('content')
-    <h1>Editar Artista</h1>
-    <form action="{{route('updateArtist')}}" method="post" class="formulario">
+    <h1>Editar Disco</h1>
+    <form action="{{route('updateDisk')}}" method="post" class="formulario">
         @csrf
-    <label>Artista</label>
-      <select name="id">
-      @foreach($artists as $artist) 
-        <option value={{$artist->id}}>{{$artist->artistName}}</option>
-        @endforeach
-      </select>
+      <input type="hidden" name="disk_id" value={{$Disk->id}}>
       <div class="cajas">
-            Nombre real:<input type="text" name="name">
+            Título:<input type="text" name="title" value='{{$Disk->title}}'>
       </div>
       <div class="cajas">
-            Nombre artístico:<input type="text" name="artistName">
+            Año:<input type="text" name="year" value={{$Disk->year}}>
       </div>
+      <div class="cajas">
+            Url de la portada:<input type="text" name="cover" value={{$Disk->cover}}>
+      </div>
+      Artistas actuales:
+      @foreach($artists as $artist)
+      <div class="cajas">
+          <input type="checkbox" name="artista[]" value={{$artist->id}} checked>{{$artist->artistName}}
+      </div>
+      @endforeach 
+      Otros Artistas:
+      @foreach($artistsNo as $artist)
+      <div class="cajas">
+          <input type="checkbox" name="artista[]" value={{$artist->id}} >{{$artist->artistName}}
+      </div>
+      @endforeach 
+
       <div class="envio">
             <input type="submit" value="Enviar" />
       </div>

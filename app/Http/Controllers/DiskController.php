@@ -10,18 +10,11 @@ use Illuminate\Support\Facades\DB;
 class DiskController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Mostraremos todos los discos
      */
     public function index()
     {
-        // $disks = DB::select('SELECT DISTINCT  d.id AS diskId,d.title AS disco, a.artistName AS artista,  d.cover, d.year
-        // FROM disks AS d
-        // LEFT JOIN artist_disk AS ad
-        // ON ad.disk_id = d.id 
-        // LEFT JOIN artists as a
-        // ON a.id=ad.artist_id
-      
-        // ORDER BY artista');
+
         $disks = DB::select('SELECT d.id AS diskId, GROUP_CONCAT(a.artistName) AS artistas, d.title AS disco, d.cover, d.year
         FROM disks AS d
         LEFT JOIN artist_disk AS ad
@@ -35,22 +28,16 @@ class DiskController extends Controller
 
         return view('disks.index', compact('disks')); //mando a una vista index en la carpeta disk para ver todos los discos
     }
+    /*
+    *Nos preparamos para mandarle todos los artístas así poderlos mostrar a la hora de crear un disco
+    */
    public function newPre(){
     $artists=Artist::all();
     return view('disks.create',compact('artists'));
    }
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Request $request)
-    {
-        
-        
-       
-    }
 
     /**
-     * Store a newly created resource in storage.
+     * Guardamos el nuevo disco
      */
     public function store(Request $request)
     {
@@ -62,6 +49,9 @@ class DiskController extends Controller
         $disk->artists()->sync($request->artista);
         return redirect()->route('Disk-index');
     }
+    /*
+    * Preparamos una lista con todos los discos para elegir cual enseñar
+    */
     public function select() //vamos a elegir los datos de que artista quiere ver
     {
         $disks=Disk::all();
@@ -69,7 +59,7 @@ class DiskController extends Controller
         return view('disks.select',compact('disks'));
     }
     /**
-     * Display the specified resource.
+     * Mostramos el disco que quiera
      */
     public function show(Request $request)
     {
@@ -93,27 +83,22 @@ class DiskController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Editamos un disco.
      */
-    public function edit(string $id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        $disk=Disk::findOrFail($request->id); //busco el id del artísta para editarlo
-        $disk->name = $request->name;
-        $disk->artistName = $request->artistName;
+     
+        $disk=Disk::findOrFail($request->disk_id); //busco el id del artísta para editarlo
+        $disk->title = $request->title;
+        $disk->year = $request->year;
         $disk->save();
-       return view('disks.show',compact('disk'));
+        $disk->artists()->sync($request->artista);
+        return redirect()->route('Disk-index');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Borramos un disco específico.
      */
     public function destroy(Request $request)
     {
@@ -124,14 +109,28 @@ class DiskController extends Controller
         $disks=Disk::all();
         return redirect()->route('Disk-index');
     }
+    /*
+    *Un selector para switchear entre borrar o editar según envíe en el formulario
+    */
     public function editDelete(Request $request){
      
         $Disk=Disk::findOrFail($request->id);
+        $artists=DB::select("SELECT *
+                            FROM artist_disk AS ad
+                            LEFT JOIN artists AS a
+                            ON a.id=ad.artist_id
+                            WHERE disk_id=$request->id");
+        $artistsNo=DB::select("SELECT *
+                            FROM artist_disk AS ad
+                            LEFT JOIN artists AS a
+                            ON a.id=ad.artist_id
+                            WHERE disk_id!=$request->id");
          
             if($request->action=="edit"){
-               return view('Disks.edit',compact('Disk'));
+               return view('Disks.edit',compact('Disk','artists','artistsNo'));
             }else if($request->action=="delete"){ 
                return view('Disks.delete',compact('Disk'));
          }
        }
+    
 }

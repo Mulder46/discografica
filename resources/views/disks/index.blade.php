@@ -10,55 +10,25 @@
         <button type="submit">Nuevo Disco</button>
     </form>
     
-    {{-- @foreach($disks as $disk)
-    <form action={{route('editDeleteDisk')}} method="post">
-        @csrf
-    <table class="tablas">   
-        <tr>
-            <td rowSpan="6"><img src="{{$disk->cover}}" width="200"></td>
-        </tr>
-        <tr>
-            <td>Título: {{$disk->disco}}</td>
-        </tr>
-        <tr>
-            <td>Artistas:</td>
-        </tr>
-            
-            <tr>
-                <td></td>
-                <td> {{$disk->artista}}</td>
-            </tr>
-            
-        </tr>
-        <tr>
-            <td>Año: {{$disk->year}}</td>
-            <input type="hidden" name="id" value={{$disk->diskId}}>
-    
-            <td> <button type="submit" name="action" value="edit">Editar</button> </td>
-        </tr>
-        <tr>
-            <td>
-            <td><button type="submit" name="action" value="delete">Borrar</button>  </td>
-        
-        </tr>
-       
-    </table> 
-    </form> 
-    @endforeach --}}
 
-    
+ 
 @foreach($disks as $disk)
 <form action={{route('editDeleteDisk')}} method="post">
     @csrf
 <table class="tablas">   
-    <tr>
-        <td rowSpan="6"><img src="{{$disk->cover}}" width="200"></td>
+    <tr><ul>
+        <li><td rowSpan="60"><img src="{{$disk->cover}}" width="200"></li>
+            
+             <li>    <button type="submit" name="action" value="edit">Editar</button> 
+                <button type="submit" name="action" value="delete">Borrar</button> </li>
+            </ul> </td>        
+                
     </tr>
     <tr>
-        <td>Título: {{$disk->disco}}</td>
+        <td >Título: {{$disk->disco}}</td>
     </tr>
-    <tr>
-        <td>Artistas:</td>
+    
+        <td >Artistas:</td>
     </tr>
         
         @php
@@ -66,23 +36,18 @@
         @endphp
 
         @foreach($artistas as $artista)
-        <tr>
-            <td></td>
-            <td> {{$artista}}</td>
-        </tr>
+        <tr><td>
+            <ul>
+            <li> {{$artista}}</li>
+            </ul>
+        </td></tr>
         @endforeach
         
     </tr>
     <tr>
         <td>Año: {{$disk->year}}</td>
         <input type="hidden" name="id" value={{$disk->diskId}}>
-
-        <td> <button type="submit" name="action" value="edit">Editar</button> </td>
-    </tr>
-    <tr>
-        <td>
-        <td><button type="submit" name="action" value="delete">Borrar</button>  </td>
-    
+        
     </tr>
    
 </table> 
